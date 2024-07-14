@@ -9,7 +9,8 @@ class LeNet(nn.Module):
         self.conv2 = nn.Conv2d(20, 20, kernel_size=5)
         self.conv2_drop = nn.Dropout2d()
         self.fc1 = nn.Linear(16280, 1000)
-        self.fc2 = nn.Linear(1000, 30)
+        # self.fc2 = nn.Linear(1000, 30)
+        self.fc2 = nn.Linear(1000, 2) # itai change
 
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
@@ -49,7 +50,8 @@ class VGG(nn.Module):
         super(VGG, self).__init__()
         self.features = _make_layers(cfg[vgg_name])
         self.fc1 = nn.Linear(7680, 512)
-        self.fc2 = nn.Linear(512, 30)
+        # self.fc2 = nn.Linear(512, 30)
+        self.fc2 = nn.Linear(512, 2) # itai change
 
     def forward(self, x):
         out = self.features(x)
