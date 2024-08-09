@@ -37,8 +37,8 @@ parser.add_argument('--seed', type=int, default=1234,
                     metavar='S', help='random seed')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='num of batches to wait until logging train status')
-parser.add_argument('--patience', type=int, default=50, metavar='N',
-                    help='how many epochs of no loss improvement should we wait before stop training')# itai change 5->50
+parser.add_argument('--patience', type=int, default=30, metavar='N',
+                    help='how many epochs of no loss improvement should we wait before stop training')# itai change 5->30
 
 # feature extraction options
 parser.add_argument('--window_size', default=.02,
@@ -106,7 +106,10 @@ epoch = 1
 # trainint with early stopping
 while (epoch < args.epochs + 1) and (iteration < args.patience):
     train(train_loader, model, optimizer, epoch, args.cuda, args.log_interval)
+    print("\nvalid score:")
     valid_loss = test(valid_loader, model, args.cuda)
+    print("\ntrain score:")
+    train_loss = test(train_loader, model, args.cuda)
     if valid_loss > best_valid_loss:
         iteration += 1
         print('Loss was not improved, iteration {0}'.format(str(iteration)))
@@ -119,10 +122,11 @@ while (epoch < args.epochs + 1) and (iteration < args.patience):
             'acc': valid_loss,
             'epoch': epoch,
         }
-        if not os.path.isdir('checkpoint'):
-            os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/ckpt.t7')
+        if not os.path.isdir('checkpoint_final_LeNet'):
+            os.mkdir('checkpoint_final_LeNet')
+        torch.save(state, './checkpoint_final_LeNet/ckpt.t7')
     epoch += 1
 
+print("\ntest score:")
 # test model
 test(test_loader, model, args.cuda)
